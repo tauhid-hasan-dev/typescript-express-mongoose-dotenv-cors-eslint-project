@@ -6,9 +6,10 @@ import { studentServices } from './student.services';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
-    const student = req.body;
+    const { student: studentData } = req.body;
     // will call service function to send this data
-    const result = await studentServices.createStudentIntoDB(student);
+    const result = await studentServices.createStudentIntoDB(studentData);
+    console.log(result);
     // send response
     res.status(200).json({
       success: true,
@@ -21,5 +22,5 @@ const createStudent = async (req: Request, res: Response) => {
 };
 
 export const studentController = {
-    createStudent
+  createStudent,
 };
