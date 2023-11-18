@@ -85,5 +85,6 @@ const studentSchema = new Schema<Student>({
   isActive: ['active', 'blocked'],
 });
 
-// Create a Model from the schema
+// Create a Model from the schema and type of the model will be the type called student.
+// we will do database query on this model.
 export const StudentModel = model<Student>('Student', studentSchema);
