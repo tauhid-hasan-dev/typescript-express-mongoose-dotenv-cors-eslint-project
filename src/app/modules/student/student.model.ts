@@ -66,6 +66,8 @@ const localGuradianSchema = new Schema<LocalGuardian>({
   },
 });
 
+// create a schema using interface
+
 const studentSchema = new Schema<Student>({
   id: { type: String },
   name: userNameSchema,
@@ -83,4 +85,5 @@ const studentSchema = new Schema<Student>({
   isActive: ['active', 'blocked'],
 });
 
+// Create a Model from the schema
 export const StudentModel = model<Student>('Student', studentSchema);
