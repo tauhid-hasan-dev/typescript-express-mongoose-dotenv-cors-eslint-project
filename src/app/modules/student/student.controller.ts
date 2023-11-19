@@ -21,6 +21,22 @@ const createStudent = async (req: Request, res: Response) => {
   }
 };
 
+const getStudentFromDB = async (req: Request, res: Response) => {
+  try {
+    const result = await studentServices.getStudentFromDB();
+    console.log(result);
+    // send response
+    res.status(200).json({
+      success: true,
+      message: 'Student is retrieved successfully',
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const studentController = {
   createStudent,
+  getStudentFromDB,
 };
