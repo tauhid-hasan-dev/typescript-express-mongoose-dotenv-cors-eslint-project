@@ -9,7 +9,7 @@ const createStudent = async (req: Request, res: Response) => {
     const { student: studentData } = req.body;
     // will call service function to send this data
     const result = await studentServices.createStudentIntoDB(studentData);
-    console.log(result);
+    /* console.log(result); */
     // send response
     res.status(200).json({
       success: true,
@@ -24,6 +24,22 @@ const createStudent = async (req: Request, res: Response) => {
 const getStudentFromDB = async (req: Request, res: Response) => {
   try {
     const result = await studentServices.getStudentFromDB();
+    /* console.log(result); */
+    // send response
+    res.status(200).json({
+      success: true,
+      message: 'All Students is retrieved successfully',
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getSingleStudentFromDB = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.studentId;
+    const result = await studentServices.getSingleStudentFromDB(id);
     console.log(result);
     // send response
     res.status(200).json({
@@ -39,4 +55,5 @@ const getStudentFromDB = async (req: Request, res: Response) => {
 export const studentController = {
   createStudent,
   getStudentFromDB,
+  getSingleStudentFromDB,
 };
