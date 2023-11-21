@@ -9,41 +9,48 @@ import {
 const userNameSchema = new Schema<UserName>({
   firstName: {
     type: String,
-    required: [true, "First Name is required"],
+    required: [true, 'First Name is required'],
+    trim: true,
+    maxlength: [20, 'Name can not be more than 20 characters'],
   },
   middleName: {
     type: String,
+     trim: true,
   },
   lastName: {
     type: String,
-    required: [true, "Last Name is required"],
+    required: [true, 'Last Name is required'],
+     trim: true,
+    maxlength: [20, 'Name can not be more than 20 characters'],
   },
 });
 
 const guardianSchema = new Schema<Guardian>({
   fatherName: {
     type: String,
-    required: true,
+    trim: true,
+    required: [true, 'Father Name is required'],
   },
   fatherOccupation: {
     type: String,
-    required: true,
+    trim: true,
+    required: [true, 'Father occupation is required'],
   },
   fatherContactNo: {
     type: String,
-    required: true,
+    required: [true, 'Father Contact No is required'],
   },
   motherName: {
     type: String,
-    required: true,
+    required: [true, 'Mother Name is required'],
   },
   motherOccupation: {
     type: String,
-    required: true,
+    required: [true, 'Mother occupation is required'],
   },
   motherContactNo: {
     type: String,
-    required: true,
+    required: [true, 'Mother Contact No is required'],
   },
 });
 
@@ -69,7 +76,7 @@ const localGurdianSchema = new Schema<LocalGuardian>({
 // create a schema using interface
 
 const studentSchema = new Schema<Student>({
-  id: { type: String, required: true, unique:true },
+  id: { type: String, required: true, unique: true },
   name: {
     type: userNameSchema,
     required: [true, 'Name field is Required'],
@@ -78,7 +85,7 @@ const studentSchema = new Schema<Student>({
     type: String,
     enum: {
       values: ['male', 'female'],
-      message: "{VALUE} is not valid"
+      message: '{VALUE} is not valid',
     },
     required: true,
   },
@@ -94,11 +101,11 @@ const studentSchema = new Schema<Student>({
   permanentAddress: { type: String, required: true },
   guardian: {
     type: guardianSchema,
-    required: [true, 'Gurdian is required']
+    required: [true, 'Gurdian is required'],
   },
   localGuardian: {
     type: localGurdianSchema,
-    required: [true, 'Local guardian is required']
+    required: [true, 'Local guardian is required'],
   },
   profileImg: { type: String },
   isActive: {},
