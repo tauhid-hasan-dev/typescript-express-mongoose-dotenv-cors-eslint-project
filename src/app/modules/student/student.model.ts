@@ -9,14 +9,14 @@ import {
 const userNameSchema = new Schema<UserName>({
   firstName: {
     type: String,
-    required: true,
+    required: [true, "First Name is required"],
   },
   middleName: {
     type: String,
   },
   lastName: {
     type: String,
-    required: true,
+    required: [true, "Last Name is required"],
   },
 });
 
@@ -69,15 +69,21 @@ const localGurdianSchema = new Schema<LocalGuardian>({
 // create a schema using interface
 
 const studentSchema = new Schema<Student>({
-  id: { type: String },
-  name: userNameSchema,
+  id: { type: String, required: true, unique:true },
+  name: {
+    type: userNameSchema,
+    required: [true, 'Name field is Required'],
+  },
   gender: {
     type: String,
-    enum: ['male', 'female'],
+    enum: {
+      values: ['male', 'female'],
+      message: "{VALUE} is not valid"
+    },
     required: true,
   },
   dateOfBirth: { type: String },
-  email: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   contactNo: { type: String, required: true },
   emergencyContactNo: { type: String, required: true },
   bloodGroup: {
@@ -86,12 +92,16 @@ const studentSchema = new Schema<Student>({
   },
   presentAddress: { type: String, required: true },
   permanentAddress: { type: String, required: true },
-  guardian: guardianSchema,
-  localGuardian: localGurdianSchema,
-  profileImg: { type: String },
-  isActive: {
-    
+  guardian: {
+    type: guardianSchema,
+    required: [true, 'Gurdian is required']
   },
+  localGuardian: {
+    type: localGurdianSchema,
+    required: [true, 'Local guardian is required']
+  },
+  profileImg: { type: String },
+  isActive: {},
 });
 
 // Create a Model from the schema and type of the model will be the type called student.
