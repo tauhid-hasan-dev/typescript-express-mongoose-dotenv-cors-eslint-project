@@ -3,23 +3,28 @@
 
 import { Request, Response } from 'express';
 import { studentServices } from './student.services';
-import { studentValidationSchema } from './student.joi.validation';
+import studentValidationSchema from './student.validation';
+// import { studentValidationSchema } from './student.joi.validation';
 
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = req.body;
+    
+    //!------Joi validation--------
+    // const { error, value } = studentValidationSchema.validate(studentData);
+    
+    //!-------Zod Validation---------
+    const zodParsedData = studentValidationSchema.parse(studentData);
 
-    const { error, value } = studentValidationSchema.validate(studentData);
-
-    if (error) {
+   /*  if (error) {
       res.status(500).json({
         success: false,
         message: 'something went wrong',
         error: error.details,
       });
-    }
+    } */
 
-    const result = await studentServices.createStudentIntoDB(value);
+    const result = await studentServices.createStudentIntoDB(zodParsedData);
 
     res.status(200).json({
       success: true,

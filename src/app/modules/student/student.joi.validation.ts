@@ -31,7 +31,7 @@ export const studentValidationSchema = Joi.object({
   id: Joi.string().required(),
   password: Joi.string().required().max(30),
   name: userNameSchema.required(),
-  gender: Joi.string().valid('male', 'female', 'other').required(),
+  gender: Joi.string().valid('male', 'female').required(),
   dateOfBirth: Joi.string(),
   email: Joi.string().email().required(),
   contactNo: Joi.string().required(),
