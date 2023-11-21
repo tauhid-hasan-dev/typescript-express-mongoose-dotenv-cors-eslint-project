@@ -9,7 +9,7 @@ const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = req.body;
 
-    const { error } = studentValidationSchema.validate(studentData);
+    const { error, value } = studentValidationSchema.validate(studentData);
 
     if (error) {
       res.status(500).json({
@@ -19,7 +19,7 @@ const createStudent = async (req: Request, res: Response) => {
       });
     }
 
-    const result = await studentServices.createStudentIntoDB(studentData);
+    const result = await studentServices.createStudentIntoDB(value);
 
     res.status(200).json({
       success: true,
