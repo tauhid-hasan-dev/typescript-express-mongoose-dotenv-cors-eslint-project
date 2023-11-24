@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
 import {
   Guardian,
@@ -6,6 +7,7 @@ import {
   StudentModel,
   UserName,
 } from './student.interface';
+import config from '../../config';
 
 const userNameSchema = new Schema<UserName>({
   firstName: {
@@ -77,7 +79,12 @@ const localGurdianSchema = new Schema<LocalGuardian>({
 // create a schema using interface
 
 const studentSchema = new Schema<TStudent, StudentModel>({
-  id: { type: String, required: true, unique: true },
+  id: { type: String, required: [true, 'Id is required'], unique: true },
+  password: {
+    type: String,
+    required: [true, 'Password is required'],
+    maxlength: [20, 'passwor'],
+  },
   name: {
     type: userNameSchema,
     required: [true, 'Name field is Required'],
@@ -112,8 +119,22 @@ const studentSchema = new Schema<TStudent, StudentModel>({
   isActive: {},
 });
 
-// !------------creating a custom static method -------------
+//!-------middlewares in mongoose ----------------
 
+// pre save middleware/ hook : will work on create()  save()
+studentSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  user.password = await bcrypt.hash(user.password, Number(config.bycrypt_salt_round));
+  next();
+});
+
+// post save middleware / hook
+studentSchema.post('save', function () {
+  console.log(this, 'post hook : data is there');
+});
+
+// !------------creating a custom static method -------------
 
 studentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
@@ -131,4 +152,3 @@ studentSchema.statics.isUserExists = async function (id: string) {
 // we will do database query on this model.
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
 export { StudentModel };
-

@@ -24,6 +24,7 @@ export type LocalGuardian = {
 
 export type TStudent = {
   id: string;
+  password: string;
   name: UserName;
   gender: 'male' | 'female';
   dateOfBirth?: string;
@@ -41,11 +42,9 @@ export type TStudent = {
 
 //!---- for creating static method---------
 
-export interface StudentModel extends Model<TStudent>{
-  isUserExists(id: string): Promise<TStudent | null>
+export interface StudentModel extends Model<TStudent> {
+  isUserExists(id: string): Promise<TStudent | null>;
 }
-
-
 
 //!---- for creating instance method---------
 /* export interface StudentMethods {
