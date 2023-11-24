@@ -112,12 +112,20 @@ const studentSchema = new Schema<TStudent, StudentModel>({
   isActive: {},
 });
 
-// creating a custom instance method
-studentSchema.methods.isUserExists = async function (id: string) {
+// !------------creating a custom static method -------------
+
+
+studentSchema.statics.isUserExists = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+  return existingUser;
+};
+
+//!-------------- creating a custom instance method------------
+/* studentSchema.methods.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
 
   return existingUser;
-};
+}; */
 
 // Create a Model from the schema and type of the model will be the type called student.
 // we will do database query on this model.
