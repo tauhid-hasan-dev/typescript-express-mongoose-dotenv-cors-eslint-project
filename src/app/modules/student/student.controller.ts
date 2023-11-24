@@ -9,14 +9,14 @@ import studentValidationSchema from './student.validation';
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = req.body;
-    
+
     //!------Joi validation--------
     // const { error, value } = studentValidationSchema.validate(studentData);
-    
+
     //!-------Zod Validation---------
     const zodParsedData = studentValidationSchema.parse(studentData);
 
-   /*  if (error) {
+    /*  if (error) {
       res.status(500).json({
         success: false,
         message: 'something went wrong',
@@ -31,10 +31,11 @@ const createStudent = async (req: Request, res: Response) => {
       message: 'Student is created successfully',
       data: result,
     });
-  } catch (err) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err: any) {
     res.status(500).json({
       success: false,
-      message: 'something went wrong',
+      message: err.message || 'something went wrong',
       error: err,
     });
   }

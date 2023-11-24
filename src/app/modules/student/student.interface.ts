@@ -1,3 +1,5 @@
+import { Model } from 'mongoose';
+
 export type UserName = {
   firstName: string;
   middleName: string;
@@ -20,7 +22,7 @@ export type LocalGuardian = {
   address: string;
 };
 
-export type Student = {
+export type TStudent = {
   id: string;
   name: UserName;
   gender: 'male' | 'female';
@@ -36,3 +38,13 @@ export type Student = {
   profileImg?: string;
   isActive: 'active' | 'blocked';
 };
+
+export interface StudentMethods {
+  isUserExists(id: string): Promise<TStudent | null>;
+}
+
+export type StudentModel = Model<
+  TStudent,
+  Record<string, never>,
+  StudentMethods
+>;

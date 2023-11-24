@@ -2,7 +2,8 @@ import { Schema, model } from 'mongoose';
 import {
   Guardian,
   LocalGuardian,
-  Student,
+  TStudent,
+  StudentModel,
   UserName,
 } from './student.interface';
 
@@ -15,12 +16,12 @@ const userNameSchema = new Schema<UserName>({
   },
   middleName: {
     type: String,
-     trim: true,
+    trim: true,
   },
   lastName: {
     type: String,
     required: [true, 'Last Name is required'],
-     trim: true,
+    trim: true,
     maxlength: [20, 'Name can not be more than 20 characters'],
   },
 });
@@ -75,7 +76,7 @@ const localGurdianSchema = new Schema<LocalGuardian>({
 
 // create a schema using interface
 
-const studentSchema = new Schema<Student>({
+const studentSchema = new Schema<TStudent, StudentModel>({
   id: { type: String, required: true, unique: true },
   name: {
     type: userNameSchema,
@@ -111,6 +112,15 @@ const studentSchema = new Schema<Student>({
   isActive: {},
 });
 
+// creating a custom instance method
+studentSchema.methods.isUserExists = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+
+  return existingUser;
+};
+
 // Create a Model from the schema and type of the model will be the type called student.
 // we will do database query on this model.
-export const StudentModel = model<Student>('Student', studentSchema);
+export const Student = model<TStudent, StudentModel>('Student', studentSchema);
+export { StudentModel };
+
