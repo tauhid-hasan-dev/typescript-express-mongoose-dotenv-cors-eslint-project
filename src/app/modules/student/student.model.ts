@@ -78,49 +78,62 @@ const localGurdianSchema = new Schema<LocalGuardian>({
 
 // create a schema using interface
 
-const studentSchema = new Schema<TStudent, StudentModel>({
-  id: { type: String, required: [true, 'Id is required'], unique: true },
-  password: {
-    type: String,
-    required: [true, 'Password is required'],
-    maxlength: [20, 'passwor'],
-  },
-  name: {
-    type: userNameSchema,
-    required: [true, 'Name field is Required'],
-  },
-  gender: {
-    type: String,
-    enum: {
-      values: ['male', 'female'],
-      message: '{VALUE} is not valid',
+const studentSchema = new Schema<TStudent, StudentModel>(
+  {
+    id: { type: String, required: [true, 'Id is required'], unique: true },
+    password: {
+      type: String,
+      required: [true, 'Password is required'],
+      maxlength: [20, 'passwor'],
     },
-    required: true,
+    name: {
+      type: userNameSchema,
+      required: [true, 'Name field is Required'],
+    },
+    gender: {
+      type: String,
+      enum: {
+        values: ['male', 'female'],
+        message: '{VALUE} is not valid',
+      },
+      required: true,
+    },
+    dateOfBirth: { type: String },
+    email: { type: String, required: true, unique: true },
+    contactNo: { type: String, required: true },
+    emergencyContactNo: { type: String, required: true },
+    bloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    },
+    presentAddress: { type: String, required: true },
+    permanentAddress: { type: String, required: true },
+    guardian: {
+      type: guardianSchema,
+      required: [true, 'Gurdian is required'],
+    },
+    localGuardian: {
+      type: localGurdianSchema,
+      required: [true, 'Local guardian is required'],
+    },
+    profileImg: { type: String },
+    isActive: {},
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  dateOfBirth: { type: String },
-  email: { type: String, required: true, unique: true },
-  contactNo: { type: String, required: true },
-  emergencyContactNo: { type: String, required: true },
-  bloodGroup: {
-    type: String,
-    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+  {
+    toJSON: {
+      virtuals: true,
+    },
   },
-  presentAddress: { type: String, required: true },
-  permanentAddress: { type: String, required: true },
-  guardian: {
-    type: guardianSchema,
-    required: [true, 'Gurdian is required'],
-  },
-  localGuardian: {
-    type: localGurdianSchema,
-    required: [true, 'Local guardian is required'],
-  },
-  profileImg: { type: String },
-  isActive: {},
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
+);
+
+//!-------Virtual-------------
+
+studentSchema.virtual('fullName').get(function () {
+  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
 });
 
 //!-------middlewares in mongoose ----------------
