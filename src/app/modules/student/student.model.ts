@@ -117,6 +117,10 @@ const studentSchema = new Schema<TStudent, StudentModel>({
   },
   profileImg: { type: String },
   isActive: {},
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 //!-------middlewares in mongoose ----------------
@@ -125,14 +129,34 @@ const studentSchema = new Schema<TStudent, StudentModel>({
 studentSchema.pre('save', async function (next) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this;
-  user.password = await bcrypt.hash(user.password, Number(config.bycrypt_salt_round));
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bycrypt_salt_round),
+  );
   next();
 });
 
-// post save middleware / hook
+//post save middleware / hook
 studentSchema.post('save', function (doc, next) {
-  doc.password = ''
-  next()
+  doc.password = '';
+  next();
+});
+
+// Query middle ware
+
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
 });
 
 // !------------creating a custom static method -------------
