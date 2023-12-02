@@ -1,4 +1,3 @@
-
 import { Schema, model } from 'mongoose';
 import {
   Guardian,
@@ -7,7 +6,6 @@ import {
   StudentModel,
   UserName,
 } from './student.interface';
-
 
 const userNameSchema = new Schema<UserName>({
   firstName: {
@@ -80,10 +78,9 @@ const localGurdianSchema = new Schema<LocalGuardian>({
 
 const studentSchema = new Schema<TStudent, StudentModel>(
   {
-    id: { type: String, required: [true, 'Id is required'], unique: true },
     user: {
       type: Schema.Types.ObjectId,
-      required: [true, 'Password is required'],
+      required: [true, 'User id is required'],
       unique: true,
       ref: 'User',
     },
@@ -118,10 +115,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, 'Local guardian is required'],
     },
     profileImg: { type: String },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     toJSON: {
@@ -137,7 +130,6 @@ studentSchema.virtual('fullName').get(function () {
 });
 
 //!-------middlewares in mongoose ----------------
-
 
 // Query middle ware
 
