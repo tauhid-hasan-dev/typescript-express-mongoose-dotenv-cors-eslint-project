@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+
 import { Schema, model } from 'mongoose';
 import {
   Guardian,
@@ -7,7 +7,7 @@ import {
   StudentModel,
   UserName,
 } from './student.interface';
-import config from '../../config';
+
 
 const userNameSchema = new Schema<UserName>({
   firstName: {
@@ -81,11 +81,6 @@ const localGurdianSchema = new Schema<LocalGuardian>({
 const studentSchema = new Schema<TStudent, StudentModel>(
   {
     id: { type: String, required: [true, 'Id is required'], unique: true },
-    password: {
-      type: String,
-      required: [true, 'Password is required'],
-      maxlength: [20, 'passwor'],
-    },
     user: {
       type: Schema.Types.ObjectId,
       required: [true, 'Password is required'],
@@ -123,7 +118,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, 'Local guardian is required'],
     },
     profileImg: { type: String },
-    isActive: {},
     isDeleted: {
       type: Boolean,
       default: false,
@@ -144,22 +138,6 @@ studentSchema.virtual('fullName').get(function () {
 
 //!-------middlewares in mongoose ----------------
 
-// pre save middleware/ hook : will work on create()  save()
-studentSchema.pre('save', async function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bycrypt_salt_round),
-  );
-  next();
-});
-
-//post save middleware / hook
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
-});
 
 // Query middle ware
 
