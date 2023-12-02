@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { userServices } from './user.service';
+import sendResponse from '../../utils/sendResponse';
+import httpStatus from 'http-status';
 
 const createStudent = async (
   req: Request,
@@ -20,9 +22,10 @@ const createStudent = async (
       studentData,
     );
 
-    res.status(200).json({
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
-      message: 'Student is created successfully',
+      message: 'Student is created succesfully',
       data: result,
     });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

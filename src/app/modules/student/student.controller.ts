@@ -1,8 +1,10 @@
+import httpStatus from 'http-status';
 // controller will only do request to services and get response from the services
 // Controller will not know the query
 
 import { Request, Response, NextFunction } from 'express';
 import { studentServices } from './student.services';
+import sendResponse from '../../utils/sendResponse';
 // import studentValidationSchema from './student.validation';
 // import { studentValidationSchema } from './student.joi.validation';
 
@@ -13,7 +15,9 @@ const getStudentFromDB = async (
 ) => {
   try {
     const result = await studentServices.getStudentFromDB();
-    res.status(200).json({
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
       message: 'All Students is retrieved successfully',
       data: result,
@@ -32,9 +36,11 @@ const getSingleStudentFromDB = async (
     const id = req.params.studentId;
     const result = await studentServices.getSingleStudentFromDB(id);
     console.log(result);
-    res.status(200).json({
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
-      message: 'Student is retrieved successfully',
+      message: 'Student is retrieved succesfully',
       data: result,
     });
   } catch (err) {
@@ -51,9 +57,11 @@ const deleteStudent = async (
     const id = req.params.studentId;
     const result = await studentServices.deleteStudentFromDB(id);
     console.log(result);
-    res.status(200).json({
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
       success: true,
-      message: 'Student is deleted successfully',
+      message: 'Student is deleted succesfully',
       data: result,
     });
   } catch (err) {
