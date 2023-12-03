@@ -17,7 +17,13 @@ const getAllAcademicSemestersFromDB = async () => {
   return result;
 };
 
+const getSingleAcademicSemesterFromDB = async (id: string) => {
+  const result = await AcademicSemester.findById(id);
+  return result;
+};
+
 export const AcademicSemesterServices = {
   createAcademicSemesterIntoDB,
   getAllAcademicSemestersFromDB,
+  getSingleAcademicSemesterFromDB,
 };
