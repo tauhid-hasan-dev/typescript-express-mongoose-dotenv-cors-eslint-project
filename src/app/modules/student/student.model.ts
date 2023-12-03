@@ -78,6 +78,11 @@ const localGurdianSchema = new Schema<LocalGuardian>({
 
 const studentSchema = new Schema<TStudent, StudentModel>(
   {
+    id: {
+      type: String,
+      required: [true, 'ID is required'],
+      unique: true,
+    },
     user: {
       type: Schema.Types.ObjectId,
       required: [true, 'User id is required'],
@@ -115,6 +120,14 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, 'Local guardian is required'],
     },
     profileImg: { type: String },
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicSemester',
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: {
