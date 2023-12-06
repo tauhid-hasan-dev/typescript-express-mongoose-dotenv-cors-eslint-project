@@ -10,7 +10,7 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
     },
     academicFaculty: {
       type: Schema.Types.ObjectId,
-      ref: 'AcademicFaculty',
+      ref: 'AcademicFaculty', //to use populate
     },
   },
   {
@@ -18,7 +18,7 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
   },
 );
 
-// it will work before document processing
+//(for creating) it will work before document processing
 academicDepartmentSchema.pre('save', async function (next) {
   const isDepartmentExist = await AcademicDepartment.findOne({
     name: this.name,
@@ -29,10 +29,10 @@ academicDepartmentSchema.pre('save', async function (next) {
   next();
 });
 
-// and it will work before the query (this is query middle ware)- if I try to update a deleted item
+//(for updating) and it will work before the query (this is query middle ware)- if I try to update a deleted item
 
 academicDepartmentSchema.pre('findOneAndUpdate', async function (next) {
-  const query = this.getQuery();  //{id: 'sdlkfjdslkfjldsfj'}
+  const query = this.getQuery(); //{id: 'sdlkfjdslkfjldsfj'}
 
   const isDepartmentExist = await AcademicDepartment.findOne(query);
 
