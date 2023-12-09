@@ -17,7 +17,7 @@ const getStudentFromDB = async () => {
 };
 
 const getSingleStudentFromDB = async (id: string) => {
-  const result = await Student.findOne({ id })
+  const result = await Student.findOne({ id: id })
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -29,12 +29,11 @@ const getSingleStudentFromDB = async (id: string) => {
 };
 
 const deleteStudentFromDB = async (id: string) => {
-
   const session = await mongoose.startSession();
 
   try {
     session.startTransaction();
-  // 
+    //
     const deletedStudent = await Student.findOneAndUpdate(
       { id },
       { isDeleted: true },

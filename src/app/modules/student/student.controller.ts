@@ -43,6 +43,8 @@ const deleteStudent = catchAsync(async (req, res) => {
   });
 });
 
+
+
 export const studentController = {
   getStudentFromDB,
   getSingleStudentFromDB,
