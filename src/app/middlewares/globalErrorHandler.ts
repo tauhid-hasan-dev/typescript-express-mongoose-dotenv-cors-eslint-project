@@ -6,6 +6,8 @@ import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { ZodError, ZodIssue } from 'zod';
 import config from '../config';
+import { TErrorSource } from '../interface/error';
+import handleZodError from '../errors/handleZodError';
 
 //! global error handler has 4 parameter
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
@@ -19,34 +21,6 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
       message: 'Something went wrong',
     },
   ];
-
-  type TErrorSource = {
-    path: string | number;
-    message: string;
-  }[];
-
-  type TGenericErrorResponse = {
-    statusCode: number;
-    message: string;
-    errorSource: TErrorSource;
-  };
-
-  const handleZodError = (err: ZodError): TGenericErrorResponse => {
-    const errorSource: TErrorSource = err.issues.map((issue: ZodIssue) => {
-      return {
-        path: issue.path[issue.path.length - 1],
-        message: issue.message,
-      };
-    });
-
-    const statusCode = 400;
-
-    return {
-      statusCode,
-      message: 'Validation Error',
-      errorSource,
-    };
-  };
 
   if (err instanceof ZodError) {
     const simplifiedError = handleZodError(err);
