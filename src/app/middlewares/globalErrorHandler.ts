@@ -5,6 +5,7 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { ZodError, ZodIssue } from 'zod';
+import config from '../config';
 
 //! global error handler has 4 parameter
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
@@ -59,7 +60,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     message,
     errorSource,
     err,
-    stack: err.stack,
+    stack: config.NODE_ENV === 'development' ? err?.stack : null,
 
     //error: err,
   });
