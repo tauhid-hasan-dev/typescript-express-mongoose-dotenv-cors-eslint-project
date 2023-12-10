@@ -8,8 +8,8 @@ import catchAsync from '../../utils/catchAsync';
 // import { studentValidationSchema } from './student.joi.validation';
 
 const getStudentFromDB = catchAsync(async (req, res) => {
-  const result = await studentServices.getStudentFromDB();
-  console.log();
+  console.log(req.query);
+  const result = await studentServices.getStudentFromDB(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

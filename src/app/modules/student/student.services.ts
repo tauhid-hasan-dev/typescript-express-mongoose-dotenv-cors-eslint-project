@@ -5,8 +5,25 @@ import mongoose from 'mongoose';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 
-const getStudentFromDB = async () => {
-  const result = await Student.find()
+const getStudentFromDB = async (query: Record<string, unknown>) => {
+  // {email : {$regex : query.searchTerm, $options : i}}
+
+  console.log(query);
+  /* {
+    $or: [
+      { email: { $regex: query.searchTerm, $options: 'i' } },
+      { 'name.firstName': { $regex: query.searchTerm, $options: 'i' } },
+      { presentAddress: { $regex: query.searchTerm, $options: 'i' } },
+    ],
+  }
+ */
+  const result = await Student.find({
+    $or: ['email', 'name.firstName', 'presentAddress'].map((field) => {
+      return {
+        [field]: { $regex: query.searchTerm, $options: 'i' },
+      };
+    }),
+  })
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
