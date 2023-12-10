@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { Student } from './student.model';
@@ -17,6 +18,11 @@ const getStudentFromDB = async (query: Record<string, unknown>) => {
     ],
   }
  */
+  let searchTerm = '';
+  if (query?.searchTerm) {
+    // eslint-disable-next-line no-unused-vars
+    searchTerm = query?.searchTerm as string;
+  }
   const result = await Student.find({
     $or: ['email', 'name.firstName', 'presentAddress'].map((field) => {
       return {
