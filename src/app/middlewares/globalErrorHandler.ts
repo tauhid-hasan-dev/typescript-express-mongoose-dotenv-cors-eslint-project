@@ -9,6 +9,7 @@ import config from '../config';
 import { TErrorSource } from '../interface/error';
 import handleZodError from '../errors/handleZodError';
 import handleValidationError from '../errors/handleValidaitonError';
+import handleCastError from '../errors/handleCastError';
 
 //! global error handler has 4 parameter
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
@@ -28,8 +29,13 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSource = simplifiedError?.errorSource;
-  } else if (err.name === 'ValidationError') {
+  } else if (err?.name === 'ValidationError') {
     const simplifiedError = handleValidationError(err);
+    statusCode = simplifiedError?.statusCode;
+    message = simplifiedError?.message;
+    errorSource = simplifiedError?.errorSource;
+  } else if (err?.name === 'CastError') {
+    const simplifiedError = handleCastError(err);
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSource = simplifiedError?.errorSource;
@@ -39,7 +45,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     success: false,
     message,
     errorSource,
-    err,
+    /*  err,  */ // from this global error we can see the type of them actual error.
     stack: config.NODE_ENV === 'development' ? err?.stack : null,
 
     //error: err,
