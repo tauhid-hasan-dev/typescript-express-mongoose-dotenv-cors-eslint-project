@@ -11,6 +11,7 @@ import handleZodError from '../errors/handleZodError';
 import handleValidationError from '../errors/handleValidaitonError';
 import handleCastError from '../errors/handleCastError';
 import handleDuplicateError from '../errors/handleDuplicateError';
+import AppError from '../errors/AppError';
 
 //! global error handler has 4 parameter
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
@@ -45,6 +46,23 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSource = simplifiedError?.errorSource;
+  } else if (err instanceof AppError) {
+    statusCode = err?.statusCode;
+    message = err.message;
+    errorSource = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
+  } else if (err instanceof Error) {
+    message = err.message;
+    errorSource = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
   }
   //ultimate return
   return res.status(statusCode).json({
