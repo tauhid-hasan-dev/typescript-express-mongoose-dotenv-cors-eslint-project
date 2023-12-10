@@ -21,18 +21,18 @@ const academicDepartmentSchema = new Schema<TAcademicDepartment>(
 );
 
 //(for creating) it will work before document processing
-// academicDepartmentSchema.pre('save', async function (next) {
-//   const isDepartmentExist = await AcademicDepartment.findOne({
-//     name: this.name,
-//   });
-//   if (isDepartmentExist) {
-//     throw new AppError(
-//       httpStatus.NOT_FOUND,
-//       'This department is already exist',
-//     );
-//   }
-//   next();
-// });
+academicDepartmentSchema.pre('save', async function (next) {
+  const isDepartmentExist = await AcademicDepartment.findOne({
+    name: this.name,
+  });
+  if (isDepartmentExist) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'This department is already exist',
+    );
+  }
+  next();
+});
 
 //(for updating) and it will work before the query (this is query middle ware)- if I try to update a deleted item
 
