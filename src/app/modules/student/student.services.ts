@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
@@ -7,29 +8,28 @@ import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
 
 const getStudentFromDB = async (query: Record<string, unknown>) => {
-  // {email : {$regex : query.searchTerm, $options : i}}
+  console.log('base query', query);
+  const queryObj = { ...query }; // to avoid mutating directly
 
-  console.log(query);
-  /* {
-    $or: [
-      { email: { $regex: query.searchTerm, $options: 'i' } },
-      { 'name.firstName': { $regex: query.searchTerm, $options: 'i' } },
-      { presentAddress: { $regex: query.searchTerm, $options: 'i' } },
-    ],
-  }
- */
   let searchTerm = '';
   if (query?.searchTerm) {
-    // eslint-disable-next-line no-unused-vars
     searchTerm = query?.searchTerm as string;
   }
-  const result = await Student.find({
-    $or: ['email', 'name.firstName', 'presentAddress'].map((field) => {
+  const studentSearchableFields = ['email', 'name.firstName', 'presentAddress'];
+
+  const searchQuery = Student.find({
+    $or: studentSearchableFields.map((field) => {
       return {
         [field]: { $regex: query.searchTerm, $options: 'i' },
       };
     }),
-  })
+  });
+
+  const excludeFields = ['searchTerm'];
+  excludeFields.forEach((el) => delete queryObj[el]);
+
+  const result = await searchQuery
+    .find(queryObj)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
