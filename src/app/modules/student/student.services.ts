@@ -6,29 +6,36 @@ import { Student } from './student.model';
 import mongoose from 'mongoose';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
+import { studentSearchableFields } from './student.constant';
 
 const getStudentFromDB = async (query: Record<string, unknown>) => {
-  console.log('base query', query);
-  const queryObj = { ...query }; // to avoid mutating directly
+  const queryObj = { ...query }; // copying req.query object so that we can mutate the copy object
 
-  let searchTerm = '';
+  let searchTerm = ''; // SET DEFAULT VALUE
+
+  // IF searchTerm  IS GIVEN SET IT
   if (query?.searchTerm) {
     searchTerm = query?.searchTerm as string;
   }
-  const studentSearchableFields = ['email', 'name.firstName', 'presentAddress'];
 
+  // HOW OUR FORMAT SHOULD BE FOR PARTIAL MATCH  :
+  /*  { email: { $regex : query.searchTerm , $options: i}}
+  { presentAddress: { $regex : query.searchTerm , $options: i}}
+  { 'name.firstName': { $regex : query.searchTerm , $options: i}} */
+
+  // WE ARE DYNAMICALLY DOING IT USING LOOP
   const searchQuery = Student.find({
-    $or: studentSearchableFields.map((field) => {
-      return {
-        [field]: { $regex: query.searchTerm, $options: 'i' },
-      };
-    }),
+    $or: studentSearchableFields.map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
   });
 
-  const excludeFields = ['searchTerm'];
-  excludeFields.forEach((el) => delete queryObj[el]);
+  // FILTERING fUNCTIONALITY:
 
-  const result = await searchQuery
+  const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
+  excludeFields.forEach((el) => delete queryObj[el]); // DELETING THE FIELDS SO THAT IT CAN'T MATCH OR FILTER EXACTLY
+
+  const filterQuery = searchQuery
     .find(queryObj)
     .populate('admissionSemester')
     .populate({
@@ -37,7 +44,26 @@ const getStudentFromDB = async (query: Record<string, unknown>) => {
         path: 'academicFaculty',
       },
     });
-  return result;
+
+  // SORTING FUNCTIONALITY:
+
+  let sort = '-createdAt'; // SET DEFAULT VALUE
+
+  // IF sort  IS GIVEN SET IT
+
+  if (query.sort) {
+    sort = query.sort as string;
+  }
+
+  const sortQuery = filterQuery.sort(sort);
+  let limit = 1;
+  if (query.limit) {
+    limit = query.limit as number;
+  }
+
+  const limitQuery = await sortQuery.limit(limit);
+
+  return limitQuery;
 };
 
 const getSingleStudentFromDB = async (id: string) => {
